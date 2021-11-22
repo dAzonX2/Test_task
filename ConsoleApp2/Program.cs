@@ -4,13 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
+using System.Text.RegularExpressions;
+
+
 namespace Test_task
 {
     internal class Program
     {
         private static List<string> FilesFound { get; } = new List<string>();
-        private const string SearchText = "hello";                              //Ключевое слово
+        private const string rusWord = @"\s[а-яА-Я]+";                             //Ключевое слово
 
         private static void DirSearch(string sDir)                              //Рекурсивная функция поиска
         {
@@ -20,13 +22,26 @@ namespace Test_task
                 {
                     foreach (var filename in Directory.GetFiles(directory))     //Поиск файлов
                     {
-                        using (var streamReader = new StreamReader(filename))
+                        /*using (var streamReader = new StreamReader(filename))
                         {
                             var contents = streamReader.ReadToEnd().ToLower();
 
-                            if (contents.Contains(SearchText))                  //Поиск слова
+                            *//*if (contents.Contains(SearchText))                  //Поиск слова
                             {
                                 FilesFound.Add(filename);
+                            }*//*
+
+                            if (Regex.IsMatch(contents, rusWord, RegexOptions.IgnoreCase))
+                            {
+                                FilesFound.Add(filename);
+                            }
+                        }*/
+                        foreach (string line in System.IO.File.ReadLines(filename))     //Построчное чтение файла
+                        {
+                            if (Regex.IsMatch(line, rusWord, RegexOptions.IgnoreCase))  //Поиск русских слов с использованием регулярки
+                            {
+                                FilesFound.Add(filename);
+                                break;
                             }
                         }
                     }
@@ -42,9 +57,10 @@ namespace Test_task
 
         private static void Main(string[] args)
         {
-            DirSearch(@"C:\Users\danil\source\repos");                          //Директория, в которой осуществляетя поиск         
-
-            Console.WriteLine("Files containing the word " + SearchText);
+            Console.WriteLine("Введите путь к директории: ");
+            string s_directory = Console.ReadLine();
+            DirSearch(@s_directory);                                    //Директория, в которой осуществляетя поиск  
+            Console.WriteLine("Файлы, содержащие русские слова: ");
             Console.WriteLine();
 
             foreach (var file in FilesFound)
