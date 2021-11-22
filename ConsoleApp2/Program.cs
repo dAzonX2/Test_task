@@ -22,20 +22,6 @@ namespace Test_task
                 {
                     foreach (var filename in Directory.GetFiles(directory))     //Поиск файлов
                     {
-                        /*using (var streamReader = new StreamReader(filename))
-                        {
-                            var contents = streamReader.ReadToEnd().ToLower();
-
-                            *//*if (contents.Contains(SearchText))                  //Поиск слова
-                            {
-                                FilesFound.Add(filename);
-                            }*//*
-
-                            if (Regex.IsMatch(contents, rusWord, RegexOptions.IgnoreCase))
-                            {
-                                FilesFound.Add(filename);
-                            }
-                        }*/
                         foreach (string line in System.IO.File.ReadLines(filename))     //Построчное чтение файла
                         {
                             if (Regex.IsMatch(line, rusWord, RegexOptions.IgnoreCase))  //Поиск русских слов с использованием регулярки
