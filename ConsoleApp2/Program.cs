@@ -13,6 +13,7 @@ namespace Test_task
     {
         private static List<string> FilesFound { get; } = new List<string>();
         private const string rusWord = @"\s[а-яА-Я]+";                             //Ключевое слово
+        string allRusWords = "";
 
         private static void DirSearch(string sDir)                              //Рекурсивная функция поиска
         {
@@ -22,12 +23,16 @@ namespace Test_task
                 {
                     foreach (var filename in Directory.GetFiles(directory))     //Поиск файлов
                     {
+                        string allRusWords = "";
                         foreach (string line in System.IO.File.ReadLines(filename))     //Построчное чтение файла
                         {
                             if (Regex.IsMatch(line, rusWord, RegexOptions.IgnoreCase))  //Поиск русских слов с использованием регулярки
                             {
-                                FilesFound.Add(filename);
-                                break;
+                                Regex regex = new Regex(rusWord);
+                                MatchCollection matches = regex.Matches(line);
+                                foreach (Match match in matches)
+                                    allRusWords += match.Value;
+                                FilesFound.Add(filename + " " + allRusWords);
                             }
                         }
                     }
